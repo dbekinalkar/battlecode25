@@ -1,5 +1,6 @@
 package dbekinalkar;
 
+import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
 
 public abstract class Entity {
@@ -9,5 +10,5 @@ public abstract class Entity {
         this.rc = rc;
     }
 
-    public abstract void run();
+    public abstract void run() throws GameActionException;
 }
