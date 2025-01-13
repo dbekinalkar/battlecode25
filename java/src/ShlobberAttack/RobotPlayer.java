@@ -8,6 +8,20 @@ public strictfp class RobotPlayer {
     static boolean moneyTowerDestroyed = false;
     static MapLocation destroyedTowerLocation;
 
+    static final Random rng = new Random(2025);
+
+    /** Array containing all the possible movement directions. */
+    static final Direction[] directions = {
+            Direction.NORTH,
+            Direction.NORTHEAST,
+            Direction.EAST,
+            Direction.SOUTHEAST,
+            Direction.SOUTH,
+            Direction.SOUTHWEST,
+            Direction.WEST,
+            Direction.NORTHWEST,
+    };
+
     public static void run(RobotController rc) throws GameActionException {
         RobotPlayer.rc = rc;
         if (rc.getLocation().y < rc.getMapHeight() / 2) {
@@ -18,6 +32,12 @@ public strictfp class RobotPlayer {
         while (true) {
             try {
                 switch (rc.getType()) {
+                    case MOPPER:
+                        runMopper();
+                        break;
+                    case LEVEL_ONE_MONEY_TOWER:
+                        runTower();
+                        break;
                     case SOLDIER:
                         runSoldier();
                         break;
@@ -50,6 +70,21 @@ public strictfp class RobotPlayer {
         }
         spawnSoldierOnly();
     }
+    public static void runDefaultTower() throws GameActionException{
+        // Pick a direction to build in.
+        Direction dir = directions[rng.nextInt(directions.length)];
+        MapLocation nextLoc = rc.getLocation().add(dir);
+        // Pick a random robot type to build.
+
+
+        rc.buildRobot(UnitType.SOLDIER, nextLoc);
+
+
+        // Read incoming messages
+
+
+        // TODO: can we attack other bots?
+    }
 
     static boolean tryAttack() throws GameActionException {
         if (rc.isActionReady()) {
@@ -59,12 +94,12 @@ public strictfp class RobotPlayer {
                     return true;
                 } else if (enemy.getType() == UnitType.LEVEL_ONE_PAINT_TOWER) {
                     rc.attack(enemy.getLocation());
-                    if (enemy.getLocation().equals(TARGET_MONEY_TOWER) && enemy.getHealth() <= 60) {
-                        moneyTowerDestroyed = true;
-                        destroyedTowerLocation = enemy.getLocation();
-                    }
                     return true;
                 }
+            }
+            if(rc.getLocation().isWithinDistanceSquared(TARGET_MONEY_TOWER,1) || rc.getLocation().isWithinDistanceSquared(new MapLocation(10,2),2) || rc.getRoundNum() > 50) {
+                moneyTowerDestroyed = true;
+
             }
         }
         return false;
@@ -76,31 +111,25 @@ public strictfp class RobotPlayer {
     }
 
     static void paintAroundDestroyedTower() throws GameActionException {
-        if (!rc.isActionReady()) return;
-
-        for (Direction dir : Direction.allDirections()) {
-            MapLocation targetLoc = destroyedTowerLocation.add(dir);
-            if (rc.canPaint(targetLoc)) {
-                rc.attack(targetLoc, true);
-            }
+        // Move and attack randomly.
+        Direction dir = directions[rng.nextInt(directions.length)];
+        MapLocation nextLoc = rc.getLocation().add(dir);
+        boolean the_move = true;
+        if (rc.canMove(dir) && the_move){
+            rc.move(dir);
+            the_move = true;
+        } else {
+            rc.move(Direction.SOUTH);
+        }
+        if (rc.canMopSwing(dir)){
+            rc.mopSwing(dir);
+            System.out.println("Mop Swing! Booyah!");
+        }
+        MapInfo currentTile = rc.senseMapInfo(rc.getLocation());
+        if (!currentTile.getPaint().isAlly() && rc.canAttack(rc.getLocation())){
+            rc.attack(rc.getLocation());
         }
 
-        if (rc.isMovementReady()) {
-            Direction bestDir = null;
-            int maxUnpainted = 0;
-
-            for (Direction dir : Direction.allDirections()) {
-                MapLocation newLoc = rc.getLocation().add(dir);
-                int unpaintedCount = countUnpaintedTiles(newLoc);
-                if (rc.canMove(dir) && unpaintedCount > maxUnpainted) {
-                    maxUnpainted = unpaintedCount;
-                    bestDir = dir;
-                }
-            }
-            if (bestDir != null) {
-                rc.move(bestDir);
-            }
-        }
     }
 
     static int countUnpaintedTiles(MapLocation loc) throws GameActionException {
@@ -112,6 +141,23 @@ public strictfp class RobotPlayer {
             }
         }
         return count;
+    }
+
+    public static void runMopper() throws GameActionException{
+        // Move and attack randomly.
+        Direction dir = directions[rng.nextInt(directions.length)];
+        MapLocation nextLoc = rc.getLocation().add(dir);
+        if (rc.canMove(dir)){
+            rc.move(dir);
+        }
+        if (rc.canMopSwing(dir)){
+            rc.mopSwing(dir);
+            System.out.println("Mop Swing! Booyah!");
+        }
+        else if (rc.canAttack(nextLoc)){
+            rc.attack(nextLoc);
+        }
+        // We can also move our code into different methods or classes to better organize it!
     }
 
     static class Pathfinding {
@@ -145,6 +191,7 @@ public strictfp class RobotPlayer {
                 if (rc.canBuildRobot(UnitType.SOLDIER, rc.getLocation().add(dir))) {
                     rc.buildRobot(UnitType.SOLDIER, rc.getLocation().add(dir));
                     return;
+
                 }
             }
         }
