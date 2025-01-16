@@ -71,10 +71,12 @@ public class PainterTask extends Task {
         int i = 0;
         int j = 0;
 
-        while(i < 5) {
+        while(j < 5) {
+            System.out.println(i + ", " + j);
             try {
+//                MapLocation loc = target.translate(i-2, j-2);
                 MapLocation loc = target.translate(dx[i], dy[i]);
-                if(this.r.rc.canPaint(loc)) {
+                if(this.r.context.paintable.contains(loc)) {
                     Pathfinder.navigate(this.r.rc, target);
                     this.r.rc.attack(loc, Patterns.chip_tower[i][j] == Patterns.two);
 
@@ -106,6 +108,7 @@ public class PainterTask extends Task {
     }
 
     public boolean paint() throws GameActionException {
+        System.out.println("Painting");
         Optional<MapLocation> ret = this.r.context.closest(this.r.context.paintable, this.r.rc.getLocation());
 
         if(ret.isEmpty()) return false;
@@ -123,9 +126,8 @@ public class PainterTask extends Task {
     }
 
     public boolean scout() throws GameActionException {
-        Direction d = Direction.values()[this.r.rand.nextInt(Direction.values().length)];
 
-        Pathfinder.navigate(this.r.rc, this.r.rc.getLocation().add(d));
+        Pathfinder.navigate(this.r.rc, new MapLocation(0, this.r.rc.getMapHeight() / 2));
         return false;
     }
 }

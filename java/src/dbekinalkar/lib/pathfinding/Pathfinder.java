@@ -47,6 +47,7 @@ public class Pathfinder {
     static Direction getDirection(RobotController rc, Direction d) {
         int i = 0;
         while(true) {
+            // TODO: Remove Infinite Loop
             if(rc.canMove(d)) return d;
             i++;
             d = nextDirection(d, i);
@@ -57,7 +58,7 @@ public class Pathfinder {
         if(i > directions.length) return Direction.CENTER;
 
         int diff = (i  + 1) / 2 * (i % 2 == 0? 1: -1);
-        int start = directionMap.get(d);
+        int start = directionMap.getOrDefault(d, 0);
 
         return directions[(start + diff + directions.length) % directions.length];
     }

@@ -1,9 +1,6 @@
 package dbekinalkar.tower;
 
-import battlecode.common.GameActionException;
-import battlecode.common.MapLocation;
-import battlecode.common.RobotController;
-import battlecode.common.UnitType;
+import battlecode.common.*;
 import dbekinalkar.Entity;
 
 public class Tower extends Entity {
@@ -29,10 +26,12 @@ public class Tower extends Entity {
     }
 
     public void run() throws GameActionException {
-        if(this.rc.getChips() - this.rc.getNumberTowers() * 250 > 1000) {
-            if(rc.canBuildRobot(UnitType.SOLDIER, this.robotSpawnLoc)) {
-                rc.buildRobot(UnitType.SOLDIER, this.robotSpawnLoc);
-            }
+        if (this.rc.getChips() - this.rc.getNumberTowers() * 250 < 1000) return;
+        if(this.rc.getRoundNum() != 2) return;
+        //if(rc.canBuildRobot(UnitType.SOLDIER, this.robotSpawnLoc)) {
+        //    rc.buildRobot(UnitType.SOLDIER, this.robotSpawnLoc);
+        if (rc.canBuildRobot(UnitType.SOLDIER, rc.getLocation().add(Direction.NORTH))) {
+            rc.buildRobot(UnitType.SOLDIER, rc.getLocation().add(Direction.NORTH));
         }
     }
 }

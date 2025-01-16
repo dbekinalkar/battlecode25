@@ -29,33 +29,41 @@ public class MapContext {
         paintable = new HashSet<MapLocation>();
         unpaintable = new HashSet<MapLocation>();
 
-        paint = new PaintType[this.rc.getMapHeight()][this.rc.getMapWidth()];
+        paint = new PaintType[this.rc.getMapWidth()][this.rc.getMapHeight()];
     }
 
     public void parseMap() throws GameActionException {
+        System.out.println("Parsing MapContext");
         MapLocation[] locs = rc.getAllLocationsWithinRadiusSquared(rc.getLocation(), 20);
 
         for(MapLocation loc: locs) {
             MapInfo mi = rc.senseMapInfo(loc);
             RobotInfo ri = rc.senseRobotAtLocation(loc);
 
-            paint[loc.y][loc.x] = mi.getPaint();
-            if(!mi.isPassable()) paint[loc.y][loc.x] = null;
+            paint[loc.x][loc.y] = mi.getPaint();
+            if(!mi.isPassable()) paint[loc.x][loc.y] = null;
 
-            switch(paint[loc.y][loc.x]) {
-                case PaintType.EMPTY:
-                    paintable.add(loc);
-                    unpaintable.remove(loc);
-                case PaintType.ENEMY_PRIMARY:
-                case PaintType.ENEMY_SECONDARY:
-                    unpaintable.add(loc);
-                    paintable.remove(loc);
+            if(paint[loc.x][loc.y] != null) {
+                switch(paint[loc.x][loc.y]) {
+                    case PaintType.EMPTY:
+                        paintable.add(loc);
+                        unpaintable.remove(loc);
+                        break;
+                    case PaintType.ALLY_PRIMARY:
+                    case PaintType.ALLY_SECONDARY:
+                        paintable.remove(loc);
+                        break;
+                    case PaintType.ENEMY_PRIMARY:
+                    case PaintType.ENEMY_SECONDARY:
+                        unpaintable.add(loc);
+                        paintable.remove(loc);
+                        break;
+                }
             }
-
-
 
             if(mi.hasRuin() ) {
                 if(ri != null) {
+                    buildable.remove(loc);
                     if (ri.getTeam() == rc.getTeam()) {
                         allyTowers.add(loc);
                     }
@@ -77,20 +85,26 @@ public class MapContext {
     }
 
     private boolean isBuildable(MapLocation ruinLoc) {
+        if(unbuildable.contains(ruinLoc)) return false;
 
         for(int i = -2; i < 3; i++) {
             for(int j = -2; j < 3; j++) {
+                if(i == 0 && j == 0) continue;
+                MapLocation loc = ruinLoc.translate(i, j);
+
+                PaintType p;
+
                 try {
-                    if(i == 0 && j == 0) continue;
-                    MapLocation loc = ruinLoc.translate(i, j);
-
                     MapInfo mi = rc.senseMapInfo(loc);
+                    p = mi.getPaint();
+                } catch (GameActionException ignored) {
+                    p = this.paint[loc.x][loc.y];
+                }
 
-                    if(mi.getPaint().isEnemy()) {
-                        unbuildable.add(ruinLoc);
-                        return false;
-                    }
-                } catch (GameActionException ignored) {}
+                if(p != null && p.isEnemy()) {
+                    unbuildable.add(ruinLoc);
+                    return false;
+                }
             }
         }
 
@@ -98,6 +112,6 @@ public class MapContext {
     }
 
     public Optional<MapLocation> closest(HashSet<MapLocation> locs, MapLocation loc) {
-        return locs.stream().min(Comparator.comparingInt(loc::distanceSquaredTo));
+        return locs.stream().min(Comparator.comparingInt(a -> loc.distanceSquaredTo(a)));
     }
 }
