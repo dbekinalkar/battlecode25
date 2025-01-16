@@ -1,4 +1,6 @@
-package lib.task_manager;
+package dbekinalkar.lib.task_manager;
+
+import battlecode.common.GameActionException;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -17,7 +19,7 @@ public class TaskManager {
         taskCount++;
     }
 
-    public void executeTask() {
+    public void executeTask() throws GameActionException {
         Task t = q.peek();
 
         while(!t.setup()) {

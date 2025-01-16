@@ -32,8 +32,6 @@ public class RobotPlayer {
             finally {
                 Clock.yield();
             }
-
-
         }
     }
 }

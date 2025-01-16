@@ -1,4 +1,4 @@
-package lib.pattern;
+package dbekinalkar.lib.pattern;
 
 
 import battlecode.common.PaintType;

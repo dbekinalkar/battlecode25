@@ -1,20 +1,35 @@
-package lib.map;
+package dbekinalkar.lib.map;
 
 import battlecode.common.*;
 
 import java.util.*;
 
 public class MapContext {
-    RobotController rc;
-    HashSet<MapLocation> buildable;
-    HashSet<MapLocation> ruined;
-    HashSet<MapLocation> enemyTowers;
-    HashSet<MapLocation> allyTowers;
+    public RobotController rc;
+
+    public HashSet<MapLocation> buildable;
+    public HashSet<MapLocation> unbuildable;
+
+    public HashSet<MapLocation> enemyTowers;
+    public HashSet<MapLocation> allyTowers;
+
+    public HashSet<MapLocation> paintable;
+    public HashSet<MapLocation> unpaintable;
+    public PaintType[][] paint;
 
     public MapContext(RobotController rc) {
         this.rc = rc;
+
         buildable = new HashSet<MapLocation>();
+        unbuildable = new HashSet<MapLocation>();
+
         enemyTowers = new HashSet<MapLocation>();
+        allyTowers = new HashSet<MapLocation>();
+
+        paintable = new HashSet<MapLocation>();
+        unpaintable = new HashSet<MapLocation>();
+
+        paint = new PaintType[this.rc.getMapHeight()][this.rc.getMapWidth()];
     }
 
     public void parseMap() throws GameActionException {
@@ -23,6 +38,21 @@ public class MapContext {
         for(MapLocation loc: locs) {
             MapInfo mi = rc.senseMapInfo(loc);
             RobotInfo ri = rc.senseRobotAtLocation(loc);
+
+            paint[loc.y][loc.x] = mi.getPaint();
+            if(!mi.isPassable()) paint[loc.y][loc.x] = null;
+
+            switch(paint[loc.y][loc.x]) {
+                case PaintType.EMPTY:
+                    paintable.add(loc);
+                    unpaintable.remove(loc);
+                case PaintType.ENEMY_PRIMARY:
+                case PaintType.ENEMY_SECONDARY:
+                    unpaintable.add(loc);
+                    paintable.remove(loc);
+            }
+
+
 
             if(mi.hasRuin() ) {
                 if(ri != null) {
@@ -57,7 +87,7 @@ public class MapContext {
                     MapInfo mi = rc.senseMapInfo(loc);
 
                     if(mi.getPaint().isEnemy()) {
-                        ruined.add(ruinLoc);
+                        unbuildable.add(ruinLoc);
                         return false;
                     }
                 } catch (GameActionException ignored) {}

@@ -1,4 +1,6 @@
-package lib.task_manager;
+package dbekinalkar.lib.task_manager;
+
+import battlecode.common.GameActionException;
 
 public class PriorityTask extends Task {
     public int priority;
@@ -6,6 +8,8 @@ public class PriorityTask extends Task {
     Task t;
 
     public PriorityTask(Task t, int priority, int taskNo) {
+        super(t.r);
+
         this.priority = priority;
         this.taskNo = taskNo;
 
@@ -16,7 +20,7 @@ public class PriorityTask extends Task {
         return this.t.setup();
     }
 
-    public void run() {
+    public void run() throws GameActionException {
         this.t.run();
     }
 }

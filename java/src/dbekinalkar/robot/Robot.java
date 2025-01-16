@@ -4,14 +4,14 @@ import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import dbekinalkar.Entity;
-import lib.map.MapContext;
-import lib.task_manager.TaskManager;
+import dbekinalkar.lib.map.MapContext;
+import dbekinalkar.lib.task_manager.TaskManager;
 
 public class Robot extends Entity {
 
-    MapLocation anchor;
-    MapContext context;
-    TaskManager tm;
+    public MapLocation anchor;
+    public MapContext context;
+    public TaskManager tm;
 
     public Robot(RobotController rc) {
         super(rc);
