@@ -75,8 +75,10 @@ public class PainterTask extends Task {
             System.out.println(i + ", " + j);
             try {
 //                MapLocation loc = target.translate(i-2, j-2);
-                MapLocation loc = target.translate(dx[i], dy[i]);
-                if(this.r.context.paintable.contains(loc)) {
+                MapLocation loc = target.translate(dx[i], dy[j]);
+//                if(this.r.context.paintable.contains(loc)) {
+                MapInfo mi = this.r.rc.senseMapInfo(loc);
+                if(mi.getPaint() != Patterns.chip_tower[i][j]) {
                     Pathfinder.navigate(this.r.rc, target);
                     this.r.rc.attack(loc, Patterns.chip_tower[i][j] == Patterns.two);
 

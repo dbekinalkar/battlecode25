@@ -27,7 +27,7 @@ public class Tower extends Entity {
 
     public void run() throws GameActionException {
         if (this.rc.getChips() - this.rc.getNumberTowers() * 250 < 1000) return;
-        if(this.rc.getRoundNum() != 2) return;
+        //if(this.rc.getRoundNum() != 2) return;
         //if(rc.canBuildRobot(UnitType.SOLDIER, this.robotSpawnLoc)) {
         //    rc.buildRobot(UnitType.SOLDIER, this.robotSpawnLoc);
         if (rc.canBuildRobot(UnitType.SOLDIER, rc.getLocation().add(Direction.NORTH))) {

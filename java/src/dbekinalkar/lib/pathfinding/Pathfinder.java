@@ -46,12 +46,13 @@ public class Pathfinder {
 
     static Direction getDirection(RobotController rc, Direction d) {
         int i = 0;
-        while(true) {
+        while(i < 8) {
             // TODO: Remove Infinite Loop
             if(rc.canMove(d)) return d;
             i++;
             d = nextDirection(d, i);
         }
+        return d;
     }
 
     static Direction nextDirection(Direction d, int i) {
