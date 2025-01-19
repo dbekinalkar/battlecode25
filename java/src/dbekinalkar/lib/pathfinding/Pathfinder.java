@@ -4,6 +4,7 @@ import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import dbekinalkar.robot.Robot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +33,12 @@ public class Pathfinder {
             Direction.NORTHWEST, 7
     );
 
-    public static boolean navigate(RobotController rc, MapLocation target) throws GameActionException {
+    public static boolean navigate(Robot r, MapLocation target) throws GameActionException {
+        return BugNav.navigate(r, target);
+    }
+
+    public static boolean old_navigate(Robot r, MapLocation target) throws GameActionException {
+        RobotController rc = r.rc;
         MapLocation loc = rc.getLocation();
         Direction d = loc.directionTo(target);
 

@@ -7,6 +7,9 @@ import java.util.*;
 public class MapContext {
     public RobotController rc;
 
+    public MapLocation lastLoc;
+    public MapLocation currLoc;
+
     public HashSet<MapLocation> buildable;
     public HashSet<MapLocation> unbuildable;
 
@@ -19,6 +22,8 @@ public class MapContext {
 
     public MapContext(RobotController rc) {
         this.rc = rc;
+        this.lastLoc = this.rc.getLocation();
+        this.currLoc = this.lastLoc;
 
         buildable = new HashSet<MapLocation>();
         unbuildable = new HashSet<MapLocation>();
@@ -33,6 +38,10 @@ public class MapContext {
     }
 
     public void parseMap() throws GameActionException {
+        this.lastLoc = this.currLoc;
+        this.currLoc = this.rc.getLocation();
+
+
         System.out.println("Parsing MapContext");
         MapLocation[] locs = rc.getAllLocationsWithinRadiusSquared(rc.getLocation(), 20);
 

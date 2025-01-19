@@ -28,7 +28,7 @@ public class RobotPlayer {
 
                 Clock.yield(); // End the robot's turn
             } catch (Exception e) {
-                System.out.println("Exception: " + e.getMessage());
+//                System.out.println("Exception: " + e.getMessage());
             }
         }
     }
