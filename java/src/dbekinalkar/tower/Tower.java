@@ -23,15 +23,26 @@ public class Tower extends Entity {
         dy = Math.max(dy, -2);
 
         this.robotSpawnLoc = loc.translate(dx, dy);
+
+
     }
 
     public void run() throws GameActionException {
         if (this.rc.getChips() - this.rc.getNumberTowers() * 250 < 1000) return;
+        if (rc.getChips() > 4000 && rc.getType() != UnitType.LEVEL_THREE_PAINT_TOWER && rc.getType() != UnitType.LEVEL_THREE_MONEY_TOWER) {
+            rc.upgradeTower(rc.getLocation());
+            System.out.println("Tower upgraded");
+        } else if ((rc.canBuildRobot(UnitType.SOLDIER, rc.getLocation().add(Direction.NORTH)))) {
+            rc.buildRobot(UnitType.SOLDIER, rc.getLocation().add(Direction.NORTH));
+        } else if (rc.getRoundNum() > 500) {
+            rc.buildRobot(UnitType.SPLASHER, rc.getLocation().add(Direction.NORTH));
+        }
+
         //if(this.rc.getRoundNum() != 2) return;
         //if(rc.canBuildRobot(UnitType.SOLDIER, this.robotSpawnLoc)) {
         //    rc.buildRobot(UnitType.SOLDIER, this.robotSpawnLoc);
-        if (rc.canBuildRobot(UnitType.SOLDIER, rc.getLocation().add(Direction.NORTH))) {
-            rc.buildRobot(UnitType.SOLDIER, rc.getLocation().add(Direction.NORTH));
-        }
+//        if (rc.canBuildRobot(UnitType.SOLDIER, rc.getLocation().add(Direction.NORTH))) {
+//            rc.buildRobot(UnitType.SOLDIER, rc.getLocation().add(Direction.NORTH));
+//        }
     }
 }
