@@ -87,14 +87,14 @@ public class PainterTask extends Task {
 
                 if (this.r.rc.getNumberTowers() % 4 == 0) {
                     if(mi.getPaint() != Patterns.paint_tower[i][j]) {
-                        Pathfinder.navigate(this.r.rc, target);
+                        Pathfinder.navigate(this.r, target);
                         this.r.rc.attack(loc, Patterns.paint_tower[i][j] == Patterns.two);
 
                         return true;
                     }
                 }else {
                     if(mi.getPaint() != Patterns.chip_tower[i][j]) {
-                        Pathfinder.navigate(this.r.rc, target);
+                        Pathfinder.navigate(this.r, target);
                         this.r.rc.attack(loc, Patterns.chip_tower[i][j] == Patterns.two);
 
                         return true;
@@ -117,7 +117,7 @@ public class PainterTask extends Task {
         // CASE 2: too far
         // CASE 3: not enough chips
         if(target.distanceSquaredTo(this.r.rc.getLocation()) > 20 || this.r.rc.getChips() < 1000) {
-            Pathfinder.navigate(this.r.rc, target);
+            Pathfinder.navigate(this.r, target);
             return true;
         }
 
@@ -134,7 +134,7 @@ public class PainterTask extends Task {
 
         target = ret.get();
 
-        boolean res = Pathfinder.navigate(this.r.rc, target);
+        boolean res = Pathfinder.navigate(this.r, target);
 
         if(this.r.rc.canPaint(target)) {
             this.r.rc.attack(target);
@@ -146,13 +146,13 @@ public class PainterTask extends Task {
 
     public boolean scout() throws GameActionException {
         if (this.r.rc.getLocation().y > this.r.rc.getMapHeight() / 2){
-            Pathfinder.navigate(this.r.rc, new MapLocation(this.r.rc.getMapWidth() / 2 + this.r.rc.getMapWidth() / 8, this.r.rc.getMapHeight() / 4));
+            Pathfinder.navigate(this.r, new MapLocation(this.r.rc.getMapWidth() / 2 + this.r.rc.getMapWidth() / 8, this.r.rc.getMapHeight() / 4));
         } else {
             int randInt = rng.nextInt(3);
             if (randInt == 0) {
-                Pathfinder.navigate(this.r.rc, new MapLocation(this.r.rc.getMapWidth() / 2 + this.r.rc.getMapWidth() / 3, this.r.rc.getMapHeight() / 4));
+                Pathfinder.navigate(this.r, new MapLocation(this.r.rc.getMapWidth() / 2 + this.r.rc.getMapWidth() / 3, this.r.rc.getMapHeight() / 4));
             } else if (randInt == 1) {
-                Pathfinder.navigate(this.r.rc, new MapLocation(this.r.rc.getMapWidth() / 16, this.r.rc.getMapHeight() / 4));
+                Pathfinder.navigate(this.r, new MapLocation(this.r.rc.getMapWidth() / 16, this.r.rc.getMapHeight() / 4));
             }
 
         }

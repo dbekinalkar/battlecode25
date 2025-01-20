@@ -3,9 +3,11 @@ package dbekinalkar.robot;
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import battlecode.common.UnitType;
 import dbekinalkar.Entity;
 import dbekinalkar.lib.map.MapContext;
 import dbekinalkar.lib.task_manager.TaskManager;
+import dbekinalkar.robot.tasks.BomberTask;
 import dbekinalkar.robot.tasks.PainterTask;
 
 public class Robot extends Entity {
@@ -20,8 +22,16 @@ public class Robot extends Entity {
         this.anchor = rc.getLocation();
         this.context = new MapContext(rc);
         this.tm = new TaskManager();
-        this.tm.addTask(new PainterTask(this), 5);
+        switch  (this.rc.getType()) {
+            case UnitType.SPLASHER:
+                this.tm.addTask(new BomberTask(this), 5);
 
+                break;
+            case UnitType.SOLDIER:
+                this.tm.addTask(new PainterTask(this), 5);
+
+                break;
+        }
         // Temporary tasks
     }
 

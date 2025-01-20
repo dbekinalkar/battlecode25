@@ -32,9 +32,9 @@ public class Tower extends Entity {
         if (rc.getChips() > 4000 && rc.getType() != UnitType.LEVEL_THREE_PAINT_TOWER && rc.getType() != UnitType.LEVEL_THREE_MONEY_TOWER) {
             rc.upgradeTower(rc.getLocation());
             System.out.println("Tower upgraded");
-        } else if ((rc.canBuildRobot(UnitType.SOLDIER, rc.getLocation().add(Direction.NORTH)))) {
+        } else if (rc.getRoundNum() < 500 && (rc.canBuildRobot(UnitType.SOLDIER, rc.getLocation().add(Direction.NORTH)))) {
             rc.buildRobot(UnitType.SOLDIER, rc.getLocation().add(Direction.NORTH));
-        } else if (rc.getRoundNum() > 500) {
+        } else if (rc.getRoundNum() > 500  && (rc.canBuildRobot(UnitType.SPLASHER, rc.getLocation().add(Direction.NORTH)))) {
             rc.buildRobot(UnitType.SPLASHER, rc.getLocation().add(Direction.NORTH));
         }
 
