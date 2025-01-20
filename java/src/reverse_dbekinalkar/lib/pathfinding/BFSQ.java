@@ -36,7 +36,7 @@ public class BFSQ {
     public void pop(int[][] loc) {
         peek(loc);
 
-        if(head == round_tail) {
+        if (head == round_tail) {
             round++;
             round_tail = tail;
         }
