@@ -16,4 +16,8 @@ public class BitGrid {
     public void unset(int x, int y) {
         grid[x] &= ~BitShift.bitMasks[y];
     }
+
+    public boolean get(int x, int y) {
+        return (grid[x] & BitShift.bitMasks[y]) != 0;
+    }
 }

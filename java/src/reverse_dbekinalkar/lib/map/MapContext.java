@@ -18,6 +18,9 @@ public class MapContext {
 
     public long[] paintable;
     public long[] unpaintable;
+
+    public BitGrid impassable;
+
     public PaintType[][] paint;
 
     public MapContext(RobotController rc) {
@@ -64,7 +67,10 @@ public class MapContext {
             MapInfo mi = mis[i];
 
             paint[loc.x][loc.y] = mi.getPaint();
-            if(!mi.isPassable()) paint[loc.x][loc.y] = null;
+            if(!mi.isPassable()) {
+                paint[loc.x][loc.y] = null;
+                impassable.set(loc.x, loc.y);
+            }
 
             if(paint[loc.x][loc.y] != null) {
                 switch(paint[loc.x][loc.y]) {
